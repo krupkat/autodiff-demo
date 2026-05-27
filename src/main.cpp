@@ -30,7 +30,11 @@
 // SOFTWARE.
 //------------------------------------------------------------------------------
 
+#ifdef __EMSCRIPTEN__
+#define SOKOL_GLES3
+#else
 #define SOKOL_GLCORE
+#endif
 #define SOKOL_IMPL
 
 #include "sokol_app.h"

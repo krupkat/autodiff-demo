@@ -8,6 +8,7 @@ mkShell {
     emscripten
     ninja
     pkgconf
+    python3
     # libraries
     libGL.dev
     libx11.dev
