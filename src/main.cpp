@@ -48,12 +48,11 @@
 #include "util/sokol_imgui.h"
 
 static bool show_test_window = true;
-static bool show_another_window = false;
 static bool show_implot_demo = true;
 
 static sg_pass_action pass_action;
 
-static void init(void) {
+void init(void) {
     // setup sokol-gfx, sokol-time and sokol-imgui
     sg_desc desc = { };
     desc.environment = sglue_environment();
@@ -73,42 +72,16 @@ static void init(void) {
     pass_action.colors[0].clear_value = { 0.0f, 0.5f, 0.7f, 1.0f };
 }
 
-static void frame(void) {
+void frame(void) {
     const int width = sapp_width();
     const int height = sapp_height();
     const double dt = sapp_frame_duration();
     simgui_new_frame({ width, height, dt, sapp_dpi_scale() });
 
-    // 1. Show a simple window
-    // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
-    static float f = 0.0f;
-    ImGui::Text("Hello, world!");
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-    ImGui::ColorEdit3("clear color", &pass_action.colors[0].clear_value.r);
-    if (ImGui::Button("Test Window")) show_test_window ^= 1;
-    if (ImGui::Button("Another Window")) show_another_window ^= 1;
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("w: %d, h: %d, dpi_scale: %.1f", sapp_width(), sapp_height(), sapp_dpi_scale());
-    if (ImGui::Button(sapp_is_fullscreen() ? "Switch to windowed" : "Switch to fullscreen")) {
-        sapp_toggle_fullscreen();
-    }
-    ImGui::Text("sapp_frame_duration: %.6f", sapp_frame_duration());
-    ImGui::Text("sapp_frame_duration_unfiltered: %.6f", sapp_frame_duration_unfiltered());
-
-    // 2. Show another simple window, this time using an explicit Begin/End pair
-    if (show_another_window) {
-        ImGui::SetNextWindowSize(ImVec2(200,100), ImGuiCond_FirstUseEver);
-        ImGui::Begin("Another Window", &show_another_window);
-        ImGui::Text("Hello");
-        ImGui::End();
-    }
-
-    // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowDemoWindow()
     if (show_test_window) {
         ImGui::ShowDemoWindow();
     }
 
-    // 4. Show the ImPlot demo window
     if (show_implot_demo) {
         ImPlot::ShowDemoWindow(&show_implot_demo);
     }
@@ -123,13 +96,13 @@ static void frame(void) {
     sg_commit();
 }
 
-static void cleanup(void) {
+void cleanup(void) {
     ImPlot::DestroyContext();
     simgui_shutdown();
     sg_shutdown();
 }
 
-static void input(const sapp_event* event) {
+void input(const sapp_event* event) {
     simgui_handle_event(event);
 }
 
