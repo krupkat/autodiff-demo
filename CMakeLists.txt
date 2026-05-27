@@ -18,8 +18,16 @@ add_library(imgui STATIC
 )
 target_include_directories(imgui PUBLIC external/imgui)
 
+add_library(implot STATIC
+  external/implot/implot.cpp
+  external/implot/implot_demo.cpp
+  external/implot/implot_items.cpp
+)
+target_include_directories(implot PUBLIC external/implot)
+target_link_libraries(implot PUBLIC imgui)
+
 add_executable(autodiff_demo src/main.cpp)
-target_link_libraries(autodiff_demo PRIVATE imgui sokol)
+target_link_libraries(autodiff_demo PRIVATE imgui implot sokol)
 
 message(STATUS "System Name: ${CMAKE_SYSTEM_NAME}")
 

@@ -43,11 +43,13 @@
 #include "sokol_glue.h"
 
 #include "imgui.h"
+#include "implot.h"
 
 #include "util/sokol_imgui.h"
 
 static bool show_test_window = true;
 static bool show_another_window = false;
+static bool show_implot_demo = true;
 
 static sg_pass_action pass_action;
 
@@ -63,6 +65,8 @@ static void init(void) {
     simgui_desc_t simgui_desc = { };
     simgui_desc.logger.func = slog_func;
     simgui_setup(&simgui_desc);
+
+    ImPlot::CreateContext();
 
     // initial clear color
     pass_action.colors[0].load_action = SG_LOADACTION_CLEAR;
@@ -101,8 +105,12 @@ static void frame(void) {
 
     // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowDemoWindow()
     if (show_test_window) {
-        ImGui::SetNextWindowPos(ImVec2(460, 20), ImGuiCond_FirstUseEver);
         ImGui::ShowDemoWindow();
+    }
+
+    // 4. Show the ImPlot demo window
+    if (show_implot_demo) {
+        ImPlot::ShowDemoWindow(&show_implot_demo);
     }
 
     // the sokol_gfx draw pass
@@ -116,6 +124,7 @@ static void frame(void) {
 }
 
 static void cleanup(void) {
+    ImPlot::DestroyContext();
     simgui_shutdown();
     sg_shutdown();
 }
