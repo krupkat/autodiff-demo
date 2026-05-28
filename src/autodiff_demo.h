@@ -6,10 +6,10 @@ namespace autodiff_demo {
 
 class AutoDiffDemo {
  public:
+  AutoDiffDemo();
   void Run();
 
  private:
-  bool precomputed_ = false;
   std::vector<double> xs_;
   std::vector<double> ys_;
 };

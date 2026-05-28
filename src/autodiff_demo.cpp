@@ -16,6 +16,21 @@ TValueType f(TValueType x) {
   return sin(x) * cos(x / 3.0) * exp(-x * x / 40.0);
 }
 
+AutoDiffDemo::AutoDiffDemo() {
+  constexpr double kXMin = -10.0;
+  constexpr double kXMax = 10.0;
+  constexpr int kSamples = 600;
+
+  xs_.resize(kSamples);
+  ys_.resize(kSamples);
+
+  for (int i = 0; i < kSamples; ++i) {
+    double x = kXMin + (kXMax - kXMin) * i / (kSamples - 1);
+    xs_[i] = x;
+    ys_[i] = f(x);
+  }
+}
+
 static void PlotTangent(double x0, double fx0, double dfx0) {
   constexpr double kHalfWidth = 2.5;
   double tx[2], ty[2];
@@ -39,22 +54,6 @@ void AutoDiffDemo::Run() {
     dual result = f(x);
     return {result.val, result.grad};  // return f(x0) and f'(x0)
   };
-
-  // Pre-compute function samples
-  if (!precomputed_) {
-    constexpr double kXMin = -10.0;
-    constexpr double kXMax = 10.0;
-    constexpr int kSamples = 600;
-    xs_.resize(kSamples);
-    ys_.resize(kSamples);
-
-    for (int i = 0; i < kSamples; ++i) {
-      double x = kXMin + (kXMax - kXMin) * i / (kSamples - 1);
-      xs_[i] = x;
-      ys_[i] = f(x);
-    }
-    precomputed_ = true;
-  }
 
   ImGui::Text("f(x) = sin(x) * cos(x/3) * exp(-x²/40)");
   ImGui::Spacing();
