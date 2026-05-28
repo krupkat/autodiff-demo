@@ -18,8 +18,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -37,86 +37,74 @@
 #endif
 #define SOKOL_IMPL
 
-#include "sokol_app.h"
-#include "sokol_gfx.h"
-#include "sokol_log.h"
-#include "sokol_glue.h"
+#include <imgui.h>
+#include <implot.h>
+#include <sokol_app.h>
+#include <sokol_gfx.h>
+#include <sokol_glue.h>
+#include <sokol_log.h>
+#include <util/sokol_imgui.h>
 
-#include "imgui.h"
-#include "implot.h"
-
-#include "util/sokol_imgui.h"
-
-static bool show_test_window = true;
-static bool show_implot_demo = true;
+#include "autodiff_demo.h"
 
 static sg_pass_action pass_action;
 
-void init(void) {
-    // setup sokol-gfx, sokol-time and sokol-imgui
-    sg_desc desc = { };
-    desc.environment = sglue_environment();
-    desc.logger.func = slog_func;
-    sg_setup(&desc);
+void Init(void) {
+  sg_desc desc = {};
+  desc.environment = sglue_environment();
+  desc.logger.func = slog_func;
+  sg_setup(&desc);
 
-    // use sokol-imgui with all default-options (we're not doing
-    // multi-sampled rendering or using non-default pixel formats)
-    simgui_desc_t simgui_desc = { };
-    simgui_desc.logger.func = slog_func;
-    simgui_setup(&simgui_desc);
+  simgui_desc_t simgui_desc = {};
+  simgui_desc.logger.func = slog_func;
+  simgui_setup(&simgui_desc);
 
-    ImPlot::CreateContext();
+  ImPlot::CreateContext();
 
-    // initial clear color
-    pass_action.colors[0].load_action = SG_LOADACTION_CLEAR;
-    pass_action.colors[0].clear_value = { 0.0f, 0.5f, 0.7f, 1.0f };
+  pass_action.colors[0].load_action = SG_LOADACTION_CLEAR;
+  pass_action.colors[0].clear_value = {0.0f, 0.5f, 0.7f, 1.0f};
 }
 
-void frame(void) {
-    const int width = sapp_width();
-    const int height = sapp_height();
-    const double dt = sapp_frame_duration();
-    simgui_new_frame({ width, height, dt, sapp_dpi_scale() });
+void Frame(void) {
+  static autodiff_demo::AutoDiffDemo demo;
 
-    if (show_test_window) {
-        ImGui::ShowDemoWindow();
-    }
+  const int width = sapp_width();
+  const int height = sapp_height();
+  const double delta_time = sapp_frame_duration();
+  simgui_new_frame({width, height, delta_time, sapp_dpi_scale()});
 
-    if (show_implot_demo) {
-        ImPlot::ShowDemoWindow(&show_implot_demo);
-    }
+  ImGui::ShowDemoWindow();
+  ImPlot::ShowDemoWindow();
 
-    // the sokol_gfx draw pass
-    sg_pass pass = {};
-    pass.action = pass_action;
-    pass.swapchain = sglue_swapchain();
-    sg_begin_pass(&pass);
-    simgui_render();
-    sg_end_pass();
-    sg_commit();
+  demo.Run();
+
+  sg_pass pass = {};
+  pass.action = pass_action;
+  pass.swapchain = sglue_swapchain();
+  sg_begin_pass(&pass);
+  simgui_render();
+  sg_end_pass();
+  sg_commit();
 }
 
-void cleanup(void) {
-    ImPlot::DestroyContext();
-    simgui_shutdown();
-    sg_shutdown();
+void Cleanup(void) {
+  ImPlot::DestroyContext();
+  simgui_shutdown();
+  sg_shutdown();
 }
 
-void input(const sapp_event* event) {
-    simgui_handle_event(event);
-}
+void Input(const sapp_event* event) { simgui_handle_event(event); }
 
 sapp_desc sokol_main(int argc, char* argv[]) {
-    (void)argc; (void)argv;
-    sapp_desc desc = { };
-    desc.init_cb = init;
-    desc.frame_cb = frame;
-    desc.cleanup_cb = cleanup;
-    desc.event_cb = input;
-    desc.window_title = "imgui-sapp.cc",
-    desc.ios.keyboard_resizes_canvas = false;
-    desc.icon.sokol_default = true;
-    desc.enable_clipboard = true;
-    desc.logger.func = slog_func;
-    return desc;
+  sapp_desc desc = {};
+  desc.init_cb = Init;
+  desc.frame_cb = Frame;
+  desc.cleanup_cb = Cleanup;
+  desc.event_cb = Input;
+  desc.window_title = "autodiff-demo";
+  desc.ios.keyboard_resizes_canvas = false;
+  desc.icon.sokol_default = true;
+  desc.enable_clipboard = true;
+  desc.logger.func = slog_func;
+  return desc;
 }

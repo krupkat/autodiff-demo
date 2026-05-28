@@ -1,6 +1,10 @@
 with import <nixpkgs> { };
 
 mkShell {
+  shellHook = ''
+    export autodiff_ROOT="${autodiff}"
+  '';
+
   packages = [
     # tools
     cmake
@@ -9,7 +13,7 @@ mkShell {
     ninja
     pkgconf
     python3
-    # libraries
+    # libraries for sokol / imgui
     libGL.dev
     libx11.dev
     libxi.dev
@@ -17,5 +21,7 @@ mkShell {
     libxcb.dev
     libxdmcp.dev
     libxrender.dev
+    # libraries
+    autodiff
   ];
 }

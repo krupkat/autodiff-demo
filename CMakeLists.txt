@@ -26,8 +26,14 @@ add_library(implot STATIC
 target_include_directories(implot PUBLIC external/implot)
 target_link_libraries(implot PUBLIC imgui)
 
-add_executable(autodiff_demo src/main.cpp)
-target_link_libraries(autodiff_demo PRIVATE imgui implot sokol)
+find_package(autodiff REQUIRED CMAKE_FIND_ROOT_PATH_BOTH) # header only
+
+add_executable(autodiff_demo
+  src/autodiff_demo.cpp
+  src/main.cpp
+)
+target_link_libraries(autodiff_demo PRIVATE imgui implot sokol autodiff::autodiff)
+target_include_directories(autodiff_demo PRIVATE src)
 
 message(STATUS "System Name: ${CMAKE_SYSTEM_NAME}")
 
