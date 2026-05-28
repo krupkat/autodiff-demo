@@ -12,7 +12,7 @@ target_include_directories(sokol INTERFACE external/sokol)
 add_library(imgui STATIC
   external/imgui/imgui.cpp
   external/imgui/imgui_draw.cpp
-  external/imgui/imgui_demo.cpp
+  # external/imgui/imgui_demo.cpp
   external/imgui/imgui_tables.cpp
   external/imgui/imgui_widgets.cpp
 )
@@ -20,7 +20,7 @@ target_include_directories(imgui PUBLIC external/imgui)
 
 add_library(implot STATIC
   external/implot/implot.cpp
-  external/implot/implot_demo.cpp
+  # external/implot/implot_demo.cpp
   external/implot/implot_items.cpp
 )
 target_include_directories(implot PUBLIC external/implot)

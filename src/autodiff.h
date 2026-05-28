@@ -4,6 +4,12 @@
 
 namespace autodiff_demo {
 
-using Dual = autodiff::dual;
+using autodiff::dual;
+using autodiff::derivative;
+using autodiff::val;
+using autodiff::seed;
+using autodiff::detail::sin;
+using autodiff::detail::cos;
+using autodiff::detail::exp;
 
 }  // namespace autodiff_demo

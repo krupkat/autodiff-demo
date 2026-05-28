@@ -73,9 +73,6 @@ void Frame(void) {
   const double delta_time = sapp_frame_duration();
   simgui_new_frame({width, height, delta_time, sapp_dpi_scale()});
 
-  ImGui::ShowDemoWindow();
-  ImPlot::ShowDemoWindow();
-
   demo.Run();
 
   sg_pass pass = {};
